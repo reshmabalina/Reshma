@@ -1,0 +1,112 @@
+<html>
+ <script>  
+		var request;  
+		function isUsernameAvailable() {  
+			var username = document.LoginForm.username.value;  
+			var url="FER_AJAX.jsp?username="+username;  
+		  
+			//alert('url: '+url);
+			if(window.XMLHttpRequest){  
+				request=new XMLHttpRequest();
+				//alert('XMLHTTPRequest');
+			}  
+			else if(window.ActiveXObject){  
+				request=new ActiveXObject("Microsoft.XMLHTTP");
+				//alert('ActiveXObject');
+			}  
+		  
+			try {  
+				request.onreadystatechange=displayStatus;  
+				request.open("GET",url,true);  
+				request.send();  
+			}  
+			catch(e) {  
+				alert("Unable to connect to server");  
+			}  
+		}  
+		  
+		function displayStatus(){  
+			if(request.readyState==4){  
+				var response = request.responseText;
+				//alert('Response:'+response+"...");
+				//alert('Response:'+response.trim()+"...");
+				var statusTdIdObj = document.getElementById('statusId');
+				if(response.trim() == 'Y') {
+					var str = "Username is available...";
+				    var result = str.fontcolor("green");
+					statusTdIdObj.innerHTML= result;
+				}
+				else {
+					var str = "Username is not available...";
+				    var result = str.fontcolor("red");
+					statusTdIdObj.innerHTML= result;
+				}
+				
+				document.getElementById('statusTrId').style.display='';
+			}  
+		}
+	
+		function vaidateForm() {
+			var form = document.LoginForm;
+			
+			var errorMessages = "";
+			
+			if(form.username == null || form.username.value == '') {
+				errorMessages += "Please enter username<br>";
+			}
+			if(form.password == null || form.password.value == '') {
+				errorMessages += "Please enter password<br>";
+			}
+			
+			
+			if(errorMessages != '') {
+				//alert(errorMessages);
+				
+				var errorIdObj = document.getElementById('errorId');
+				errorIdObj.innerHTML = errorMessages.fontcolor('red');
+				
+				document.getElementById('errorTrId').style.display='';
+			}
+			else {
+				document.getElementById('errorTrId').style.display='none';
+				
+				form.submit();
+			}
+		}
+	</script>
+
+	<head>
+		<title>FER-Login</title>
+	</head>
+	<body>
+		<form action="LoginPost.jsp" method="post" name="LoginForm">
+			<table border="1" align="center">
+				<tr>
+					<td colspan="2" align="center">
+						Login
+					</td>
+				</tr>
+				<tr id="errorTrId" style='display: none;'>
+				<td colspan="2"><span id="errorId"> </span></td>
+			</tr> 
+				<tr>
+				<td>Username</td>
+				<td><input type="text" name="username" onchange="isUsernameAvailable();"></td>
+			</tr>
+			 <tr id="statusTrId" style='display: none;'>
+				<td colspan="2"><span id="statusId"> </span></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input type="text" name="password"></td>
+			</tr>
+				<tr>
+					<td colspan="2" align="center"> 
+						<input type="button" value="Login" onclick="vaidateForm();" > 
+						<a href="Registration.html">Register</a>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</body>
+</html>

@@ -1,0 +1,140 @@
+<html>
+
+<script>  
+		var request;  
+		function isUsernameAvailable() {  
+			var username = document.RegistrationForm.username.value;  
+			var url="FER_AJAX.jsp?username="+username;  
+		  
+			//alert('url: '+url);
+			if(window.XMLHttpRequest){  
+				request=new XMLHttpRequest();
+				//alert('XMLHTTPRequest');
+			}  
+			else if(window.ActiveXObject){  
+				request=new ActiveXObject("Microsoft.XMLHTTP");
+				//alert('ActiveXObject');
+			}  
+		  
+			try {  
+				request.onreadystatechange=displayStatus;  
+				request.open("GET",url,true);  
+				request.send();  
+			}  
+			catch(e) {  
+				alert("Unable to connect to server");  
+			}  
+		}  
+		  
+		function displayStatus(){  
+			if(request.readyState==4){  
+				var response = request.responseText;
+				//alert('Response:'+response+"...");
+				//alert('Response:'+response.trim()+"...");
+				var statusTdIdObj = document.getElementById('statusId');
+				if(response.trim() == 'Y') {
+					var str = "Username is available...";
+				    var result = str.fontcolor("green");
+					statusTdIdObj.innerHTML= result;
+				}
+				else {
+					var str = "Username is not available...";
+				    var result = str.fontcolor("red");
+					statusTdIdObj.innerHTML= result;
+				}
+				
+				document.getElementById('statusTrId').style.display='';
+			}  
+		}
+	
+		function vaidateForm() {
+			var form = document.RegistrationForm;
+			
+			var errorMessages = "";
+			if(form.firstName == null || form.firstName.value == '') {
+				errorMessages = "Please enter first name<br>";
+			}
+			if(form.lastName == null || form.lastName.value == '') {
+				errorMessages = errorMessages + "Please enter last name<br>";
+			}
+			if(form.email == null || form.email.value == '') {
+				errorMessages += "Please enter email id<br>";
+			}
+			if(form.username == null || form.username.value == '') {
+				errorMessages += "Please enter username<br>";
+			}
+			if(form.password == null || form.password.value == '') {
+				errorMessages += "Please enter password<br>";
+			}
+			if(form.mobile == null || form.mobile.value == '') {
+				errorMessages += "Please enter mobile<br>";
+			}
+			
+			if(errorMessages != '') {
+				//alert(errorMessages);
+				
+				var errorIdObj = document.getElementById('errorId');
+				errorIdObj.innerHTML = errorMessages.fontcolor('red');
+				
+				document.getElementById('errorTrId').style.display='';
+			}
+			else {
+				document.getElementById('errorTrId').style.display='none';
+				
+				form.submit();
+			}
+		}
+	</script>
+
+<head>
+<title>FER-Registration</title>
+</head>
+<body>
+	<form action="RegistrationPost.jsp" name="RegistrationForm">
+		<table border="1" align="center">
+			<tr>
+				<td colspan="2" align="center">Registration</td>
+			</tr>
+			<tr id="errorTrId" style='display: none;'>
+				<td colspan="2"><span id="errorId"> </span></td>
+			</tr>
+			<tr>
+				<td>First Name</td>
+				<td><input type="text" name="firstName"></td>
+			</tr>
+			<tr>
+				<td>Middle Name</td>
+				<td><input type="text" name="middleName"></td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td><input type="text" name="lastName"></td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td><input type="text" name="email"></td>
+			</tr>
+			<tr>
+				<td>Username</td>
+				<td><input type="text" name="username"
+					onchange="isUsernameAvailable();"></td>
+			</tr>
+			<tr id="statusTrId" style='display: none;'>
+				<td colspan="2"><span id="statusId"> </span></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input type="text" name="password"></td>
+			</tr>
+			<tr>
+				<td>Mobile</td>
+				<td><input type="text" name="mobile"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="button"
+					value="Register" onclick="vaidateForm();"></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
